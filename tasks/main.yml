@@ -1,0 +1,79 @@
+---
+# tasks file for ansible-role-landir.dot_files
+- name: "Check if exists at {{ usuario_home_path }}"
+  stat:
+    path: "{{ usuario_home_path }}/.meucfg"
+  register: stat_result
+  become: false
+  become_user: "{{ usuario }}"
+
+- name: Shell configure bare git repo
+  shell: |
+    cd {{ usuario_home_path }}
+    echo "alias config='git --git-dir={{ usuario_home_path }}/.meucfg --work-tree={{ usuario_home_path }}'" >> {{ usuario_home_path }}/.bashrc
+    echo "alias config='git --git-dir={{ usuario_home_path }}/.meucfg --work-tree={{ usuario_home_path }}'" >> {{ usuario_home_path }}/.zshrc
+    alias config='git --git-dir={{ usuario_home_path }}/.meucfg --work-tree={{ usuario_home_path }}'
+    git init --bare {{ usuario_home_path }}/.meucfg
+    config config --local status.showUntrackedFiles no
+
+    echo .meucfg  >> .gitignore
+
+    touch .fasdrc
+    config add .fasdrc
+    config commit -m "fasdrc"
+
+    touch .bashrc
+    config add .bashrc
+    config commit -m "bashrc"
+
+    mkdir -p .config/Code/User
+    touch .config/Code/User/settings.json
+    config add .config/Code/User/settings.json
+    config commit -m "config/Code/User/settings.json"
+
+    touch .gitconfig
+    config add .gitconfig
+    config commit -m "gitconfig"
+
+    mkdir -p .sdkman/etc
+    touch .sdkman/etc/config
+    config add .sdkman/etc/config
+    config commit -m "sdkman/etc/config"
+
+    touch .vimrc
+    config add .vimrc
+    config commit -m "vimrc"
+
+    mkdir -p .vim
+    touch .vim/dummy
+    config add .vim
+    config commit -m "vim"
+
+    touch .tmux.conf
+    config add .tmux.conf
+    config commit -m "tmux.conf"
+
+    touch .zshrc
+    config add .zshrc
+    config commit -m "zshrc"
+
+    exit 0
+  when: not stat_result.stat.exists
+  become: false
+  become_user: "{{ usuario }}"
+
+- name: Configure /etc/zsh/zprofile
+  template:
+    src: "{{ zprofile_src }}"
+    dest: "/etc/zsh/zprofile"
+  become: true
+
+- name: Add .zshrc
+  become: false
+  become_user: '{{ usuario }}'
+  lineinfile:
+    path: '~/.zshrc'
+    line: 'source /etc/zsh/zprofile'
+    create: yes
+    mode: 'u=rw,go=r'
+

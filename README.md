@@ -1,7 +1,6 @@
 # Quick Install
 * Prerequisite:
   * bash sudo curl
-  * https://github.com/ansible-used-roles/ansible-role-landir.packages_many
 
 ``` curl -sL https://raw.githubusercontent.com/ansible-used-roles/ansible-role-landir.dot_files/main/scripts/quickinstall.sh | sudo bash ```
 

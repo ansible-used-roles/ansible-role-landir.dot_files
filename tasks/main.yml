@@ -58,6 +58,7 @@
     config commit -m "zshrc"
 
     mkdir -p /etc/zsh/
+    mkdir -p {{ usuario_home_path }}
 
     exit 0
   when: not stat_result.stat.exists

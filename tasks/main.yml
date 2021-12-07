@@ -80,3 +80,10 @@
     create: yes
     mode: 'u=rw,go=r'
 
+- name: Limit for opened files
+  sysctl:
+    name: fs.inotify.max_user_watches
+    value: '524288'
+    sysctl_file: /etc/sysctl.conf
+    state: present
+  tags: [sysctl.conf]

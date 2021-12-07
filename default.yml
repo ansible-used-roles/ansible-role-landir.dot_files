@@ -4,3 +4,6 @@
   gather_facts: true
   roles:
     - ansible-role-landir.dot_files
+  vars:
+    usuario: "landir"
+    usuario_home_path: "/home/{{ usuario }}"
